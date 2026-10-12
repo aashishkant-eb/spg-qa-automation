@@ -1,0 +1,6 @@
+case,fullName,email,contactNumber,title,expectedStatus,expectedMessage
+valid,QA DDT Valid {{$timestamp}},qa.ddt.valid.{{$timestamp}}@example.com,{{phone}},QA Lead,201,created
+missing name,,qa.ddt.noname.{{$timestamp}}@example.com,{{phone}},QA Lead,422,name
+invalid email,QA DDT Bad Email {{$timestamp}},not-an-email-{{$timestamp}},{{phone}},QA Lead,422,email
+empty phone,QA DDT No Phone {{$timestamp}},qa.ddt.nophone.{{$timestamp}}@example.com,,QA Lead,422,required
+short title,QA DDT Short Title {{$timestamp}},qa.ddt.short.{{$timestamp}}@example.com,{{phone}},QA,422,title

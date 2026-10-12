@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SPG QA Package – How Everything Works</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+  :root { --navy:#0f2747; --blue:#1f4e79; --grey:#5b6573; --line:#d7dde5; --soft:#f3f6fa; --red:#b42318; --amber:#b54708; --green:#067647; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 "Segoe UI", "DejaVu Sans", Arial, sans-serif; color:#1d2530; margin:0; }
+  h1 { font-size: 20pt; color: var(--navy); margin: 0 0 6px; }
+  h2 { font-size: 14.5pt; color: var(--navy); margin: 0 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--navy); }
+  h3 { font-size: 11.5pt; color: var(--blue); margin: 14px 0 4px; }
+  p { margin: 4px 0 8px; }
+  section { page-break-before: always; }
+  .cover { height: 250mm; display:flex; flex-direction:column; justify-content:center; }
+  .cover .kicker { color: var(--blue); font-weight:600; letter-spacing:.08em; text-transform:uppercase; font-size:9.5pt; }
+  .cover h1 { font-size: 30pt; line-height:1.15; margin:10px 0 14px; }
+  .cover .sub { font-size: 13pt; color: var(--grey); max-width: 150mm; }
+  .cover .meta { margin-top: 26px; border-top: 2px solid var(--navy); padding-top: 12px; color: var(--grey); font-size: 10pt; }
+  table { width:100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.5pt; page-break-inside: avoid; }
+  th { background: var(--navy); color:#fff; text-align:left; padding:5px 7px; font-weight:600; }
+  td { border-bottom: 1px solid var(--line); padding:5px 7px; vertical-align: top; }
+  tr:nth-child(even) td { background: var(--soft); }
+  code, pre { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 8.8pt; }
+  code { background: var(--soft); padding: 1px 4px; border-radius: 3px; }
+  pre { background: #0f1b2d; color: #e6edf6; padding: 9px 11px; border-radius: 6px; white-space: pre-wrap; margin: 6px 0 10px; page-break-inside: avoid; }
+  .note { border-left: 4px solid var(--blue); background: var(--soft); padding: 7px 10px; margin: 8px 0; page-break-inside: avoid; }
+  .warn { border-left-color: var(--amber); background:#fff7ed; }
+  .flow { display:flex; flex-wrap: wrap; gap:6px; align-items:center; margin: 8px 0 12px; }
+  .box { border:1.5px solid var(--navy); border-radius:6px; padding:6px 9px; font-size:9pt; background:#fff; text-align:center; min-width: 27mm; }
+  .box b { display:block; color: var(--navy); font-size:9.5pt; }
+  .arrow { color: var(--blue); font-weight:700; }
+  .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .card { border:1px solid var(--line); border-radius:6px; padding:8px 10px; page-break-inside: avoid; }
+  .card h3 { margin-top:0; }
+  .sev { display:inline-block; font-weight:700; font-size:8.5pt; padding:1px 6px; border-radius:9px; color:#fff; }
+  .c { background: var(--red); } .h { background: var(--amber); } .m { background:#a16207; } .l { background: var(--green); }
+  ol, ul { margin: 4px 0 8px 18px; padding:0; } li { margin: 2px 0; }
+  .small { font-size: 9pt; color: var(--grey); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="kicker">EB Pearls · QA</div>
+  <h1>SPG QA Package<br>How Everything Works</h1>
+  <div class="sub">Bug reports, the verified Postman collection, the Gherkin + Playwright automation for the API and CMS, and the AI QA skills – explained in plain language.</div>
+  <div class="meta">Environment: SPG staging (stagecms / stageapi.red.global) · Prepared 7 October 2026<br>Built to the EB Pearls QA Process Guidelines · Works on Linux · Skills for OpenClaude, Claude Code and Opencode</div>
+</div>
+
+<section>
+  <h2>1. The big picture</h2>
+  <p>Everything in this package follows one loop. A requirement becomes test cases, the test cases become automated Gherkin scenarios, the scenarios run against SPG, and the results become bug reports and sprint documents.</p>
+  <div class="flow">
+    <div class="box"><b>Requirement</b>SRS (Coda) / Jira story</div><span class="arrow">→</span>
+    <div class="box"><b>Test cases</b>RTM + Gherkin<br><span class="small">testcase-generator</span></div><span class="arrow">→</span>
+    <div class="box"><b>Automation</b>features + steps<br><span class="small">automation-generator</span></div><span class="arrow">→</span>
+    <div class="box"><b>Run</b>Playwright (API + CMS)<br><span class="small">npm test / CI</span></div><span class="arrow">→</span>
+    <div class="box"><b>Results</b>reports + bugs<br><span class="small">bug-report-writer</span></div><span class="arrow">→</span>
+    <div class="box"><b>Documents</b>Coda / Outline<br><span class="small">qa-docs-writer</span></div>
+  </div>
+  <h3>What is in the package</h3>
+  <table>
+    <tr><th>Folder / file</th><th>What it is</th><th>Who uses it</th></tr>
+    <tr><td><code>START_HERE.md</code></td><td>One-page map of the package</td><td>Everyone</td></tr>
+    <tr><td><code>SPG_API_QA_Report_…/</code> Word files</td><td>Confirmed bugs (short + detailed), suspected bugs and how to verify</td><td>Senior, EM, developers</td></tr>
+    <tr><td><code>…/markdown/</code></td><td>Same reports as Markdown + bug tracker CSV</td><td>Coda, Outline, Zoom Docs</td></tr>
+    <tr><td><code>…/postman/</code></td><td>Verified Postman collection v2.1 (115 requests, creates no permanent records) + “Creates Permanent Data” collection (39 requests, on purpose only) + environment + upload photo</td><td>Manual / API QA</td></tr>
+    <tr><td><code>SPG_Jira_Bug_Reporting_2026-10-08/</code></td><td>How to work in Jira (time log, bug tickets, linking to stories) + 10 bug tickets ready to paste + cleanup request for devs</td><td>Daily Jira work</td></tr>
+    <tr><td><code>spg-qa-automation/</code></td><td>Gherkin + Playwright project, CI pipeline, AI skills, guides</td><td>Automation QA</td></tr>
+  </table>
+  <div class="note"><b>Passwords are not included anywhere.</b> You set them yourself: Postman <i>Current value</i> and the <code>.env</code> file.</div>
+</section>
+
+<section>
+  <h2>2. How SPG works (what a tester must know)</h2>
+  <div class="grid2">
+    <div class="card"><h3>CMS and API</h3><p>The CMS (stagecms) is a React app. Every screen calls the SPG API (stageapi …/v1). Testing the API tests the same rules the CMS uses.</p></div>
+    <div class="card"><h3>One session per account</h3><p>A new login ends the previous one. If Postman, the CMS and a teammate share an account, they log each other out with <b>"Invalid Token!"</b>. The automation logs in once and shares that session.</p></div>
+    <div class="card"><h3>How photos work</h3><p>The CMS uploads the picture straight to cloud storage (S3, via a Cognito identity), then saves only the file <b>key</b> in fields like <code>profilePhoto</code> or <code>entityLogo</code>. The API never receives the image itself.</p></div>
+    <div class="card"><h3>Entity context</h3><p>Entity screens send the header <code>x-effective-role: entityPrincipalAdmin</code> – the same as "Login on behalf". Client, alert-group and emergency calls need it.</p></div>
+    <div class="card"><h3>Updates need the full record</h3><p>PATCH requests must send the whole object (same shape as create). Partial bodies are rejected – and on "my profile" they <b>erase</b> fields (SPG-BUG-11).</p></div>
+    <div class="card"><h3>Emergencies</h3><p>Start = <code>POST /admin/emergency</code>. Mark as safe = <code>PATCH /admin/emergency/{id}</code> with <code>{}</code> – it works. <b>Posting a response comment crashes staging</b> (SPG-BUG-24) – never automate it.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>3. The automation – how a test runs</h2>
+  <div class="flow">
+    <div class="box"><b>.feature</b>Gherkin in plain English</div><span class="arrow">→</span>
+    <div class="box"><b>bddgen</b>turns it into Playwright tests</div><span class="arrow">→</span>
+    <div class="box"><b>steps</b>code behind each sentence</div><span class="arrow">→</span>
+    <div class="box"><b>fixtures</b>api · world · cleanup · page</div><span class="arrow">→</span>
+    <div class="box"><b>reports</b>HTML · Cucumber · JUnit · Markdown</div>
+  </div>
+  <pre>@ui @photo
+Feature: Photos are shown in the CMS
+  @regression @fail @SPG-BUG-25 @TC-UI-002
+  Scenario: Super admin photo is shown after saving
+    Given a super admin exists
+    When I open the super admin edit page
+    And I upload and crop the photo "qa-photo.png"
+    And I save the form
+    And I reopen the edit page
+    Then the saved photo is shown</pre>
+  <h3>Building blocks</h3>
+  <table>
+    <tr><th>Piece</th><th>Job</th></tr>
+    <tr><td><code>api</code></td><td>Calls the SPG API with the shared session; logs in again if another login ended it.</td></tr>
+    <tr><td><code>world</code></td><td>Remembers IDs and request bodies between the steps of one scenario.</td></tr>
+    <tr><td><code>cleanup</code></td><td>Deletes everything the scenario created – even when it fails. QA entities are left disabled (no delete endpoint).</td></tr>
+    <tr><td>CMS sign-in</td><td>UI tests put the API token into the browser (<code>serviceToken</code>) instead of typing the password – a second login would log out the API tests.</td></tr>
+    <tr><td><code>redact()</code></td><td>Removes passwords, hashes and tokens from every failure message and report.</td></tr>
+  </table>
+  <h3>Tags (QA guide)</h3>
+  <table>
+    <tr><th>Tag</th><th>Meaning</th></tr>
+    <tr><td><code>@smoke</code> / <code>@regression</code></td><td>Quick check on every change / full pack nightly and before release.</td></tr>
+    <tr><td><code>@wip</code> / <code>@manual</code></td><td>Not ready / cannot be automated – never run by default.</td></tr>
+    <tr><td><code>@TC-AREA-001</code></td><td>The RTM test case id – links the scenario to Jira RTM.</td></tr>
+    <tr><td><code>@fail @SPG-BUG-xx</code></td><td>Known bug. The run stays green while the bug exists and goes <b>red when it is fixed</b> – then remove <code>@fail</code>.</td></tr>
+  </table>
+  <h3>Coverage today – 32 scenarios (27 by default + 5 <code>@creates-data</code>, run on purpose only)</h3>
+  <table>
+    <tr><th>Area</th><th>Scenarios</th></tr>
+    <tr><td>API</td><td>Login &amp; security, support staff (create, photo, validation, paging), entities (logo + admin photo, enable/disable, principal admin, delete), clients (all sections, family photos, enable/disable, alert history), security numbers, lists &amp; dropdowns, emergencies (start, mark as safe, delete, archive, timing)</td></tr>
+    <tr><td>CMS (browser)</td><td>Login error, main menu, entity page shows the right principal admin, photo shown after saving (Field Operative and Super Admin)</td></tr>
+  </table>
+  <div class="note"><b>Every CMS endpoint is accounted for:</b> 116 endpoints – 92 tested, 18 not run on purpose (they send real messages, change shared settings or crash staging), 6 need data first, 0 forgotten. Full table: <code>docs/API_COVERAGE.md</code>.</div>
+  <p class="small">Last verified 8 Oct 2026 (27 default scenarios): 21 pass · 5 known bugs flagged · 1 unexpected failure – TC-EN-001 failed once on timing (SPG-SUS-13) and passed 3 of 3 re-runs. The run added 0 entities, field operatives, support staff or entity users. The emergency start time is recorded against the 3 s SRS limit (2.9–3.5 s across runs).</p>
+</section>
+
+<section>
+  <h2>4. Run it on Linux</h2>
+  <h3>One command for everything</h3>
+  <pre>./run.sh setup        # once: Node packages + Chromium (no sudo needed)
+./run.sh smoke        # 5 quick scenarios
+./run.sh test         # everything – API + CMS (~5 min) + sprint report
+./run.sh postman      # Postman collection with newman (~2 min)
+./run.sh report       # open the HTML report
+./run.sh skills       # install the AI skills for Claude Code / OpenClaude</pre>
+  <p class="small">Run it from the package folder (where <code>run.sh</code> is). In your private copy the password is already in <code>spg-qa-automation/.env</code>.</p>
+  <h3>Or directly inside the project</h3>
+  <h3>Every day</h3>
+  <table>
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>npm run test:smoke</code></td><td>5 quick scenarios</td></tr>
+    <tr><td><code>npm test</code></td><td>Everything (about 5 minutes)</td></tr>
+    <tr><td><code>npm run test:api</code> / <code>test:ui</code></td><td>Only API / only CMS</td></tr>
+    <tr><td><code>TAGS='@photo' npm test</code></td><td>Any tag combination</td></tr>
+    <tr><td><code>npm run test:headed</code></td><td>Watch the browser</td></tr>
+    <tr><td><code>npm run report</code></td><td>HTML report with screenshots, video and trace</td></tr>
+    <tr><td><code>node scripts/sprint-report.mjs "Sprint 7"</code></td><td>Sprint automation report (Markdown for Coda / Outline)</td></tr>
+    <tr><td><code>npm run steps:list</code></td><td>All existing steps – reuse them</td></tr>
+  </table>
+  <h3>CI (GitHub Actions)</h3>
+  <p>Pull requests run <code>@smoke</code>, a nightly job runs <code>@regression</code>, results go to Slack and reports are kept for 30 days. Add the password as a repository <b>secret</b> (<code>SPG_ADMIN_PASSWORD</code>) and the URLs as variables. GitLab / Bitbucket: run the same four commands.</p>
+  <h3>Postman (manual / API QA)</h3>
+  <ol>
+    <li>Import the collection and environment from <code>SPG_API_QA_Report_…/postman/</code>.</li>
+    <li>Set <code>adminPassword</code> as <b>Current value</b>; set Postman's working directory to the <code>postman/</code> folder (photo upload).</li>
+    <li>Run the collection in order. Folders 00–13, 97, 99 should be green; folder 98 (known bugs) is red until fixed.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>5. AI skills – OpenClaude, Claude Code, Opencode</h2>
+  <p>Five skills follow the QA guide's "QA Skills Setup" format (front-matter + What I do, When to use me, Instructions, Trigger, Output, Format, Coverage). They live in <code>.opencode/skills/</code> (QA guide location) with a copy in <code>.claude/skills/</code>.</p>
+  <table>
+    <tr><th>Skill</th><th>Give it</th><th>You get</th></tr>
+    <tr><td><code>testcase-generator</code></td><td>Story, SRS section, acceptance criteria</td><td>RTM table + Gherkin + coverage summary + open questions</td></tr>
+    <tr><td><code>api-testcase-generator</code></td><td>Endpoints / dev handoff comment</td><td>API cases, DDT CSV, Postman tests</td></tr>
+    <tr><td><code>automation-generator</code></td><td>Approved Gherkin</td><td>Feature + steps in this repo, verified by a real run</td></tr>
+    <tr><td><code>bug-report-writer</code></td><td>Failures, notes, screenshots</td><td>EB Pearls-format bugs; confirmed vs suspected</td></tr>
+    <tr><td><code>qa-docs-writer</code></td><td>Sprint data, reports</td><td>Release report, test plan, automation report (short)</td></tr>
+  </table>
+  <h3>Install the AI tool (Ubuntu)</h3>
+  <pre>npm install -g opencode-ai          # Opencode – QA guide standard
+opencode auth login                 # connect Claude / OpenAI / Gemini …
+cd spg-qa-automation && opencode    # skills load automatically</pre>
+  <p class="small">Checked: Opencode 1.18.35 loads all 5 skills from <code>.opencode/skills/</code>. OpenClaude and Claude Code steps: <code>docs/AI_TOOLS_SETUP.md</code>.</p>
+  <h3>Use with OpenClaude or Claude Code</h3>
+  <pre>cd spg-qa-automation            # project skills in .claude/skills load automatically
+# or install for every project:
+bash scripts/install-skills.sh claude</pre>
+  <p>Or simply <code>./run.sh skills</code>. Then ask in plain words, or call a skill by name, e.g. <code>/testcase-generator</code>. <code>CLAUDE.md</code> gives the AI the project rules.</p>
+  <h3>Use with Opencode</h3>
+  <p>Open the repo – <code>.opencode/skills/</code> and <code>AGENTS.md</code> load automatically. Global: <code>bash scripts/install-skills.sh opencode-global</code>.</p>
+  <div class="note"><b>After editing a skill</b> run <code>bash scripts/sync-skills.sh</code> to copy it to <code>.claude/skills</code>, then commit.</div>
+  <h3>AI rules for the team</h3>
+  <ol>
+    <li>AI drafts, people approve (QA Lead review stays).</li>
+    <li>Verify everything: <code>bddgen</code>, type check and a real run before merging.</li>
+    <li>Confirmed vs suspected – never log a suspicion as a bug.</li>
+    <li>No secrets in prompts or output.</li>
+    <li>Never let AI run actions that harm shared environments.</li>
+    <li>Security findings stay high-level and on restricted pages.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>6. Importing the reports</h2>
+  <table>
+    <tr><th>Where</th><th>How</th></tr>
+    <tr><td><b>Coda</b> (recommended – SRS is there)</td><td>Open the <code>.md</code> file, copy all, paste into a page (Coda formats it). Tracker: type <code>/import</code> → CSV → <code>SPG_Bug_Tracker_…csv</code>. Attach the detailed Word files. Put security bugs on a restricted page.</td></tr>
+    <tr><td><b>Outline</b></td><td>Collection ⋯ → Import → the <code>.md</code> or <code>.docx</code>. A shared collection is visible to everyone with access; a private one only to you.</td></tr>
+    <tr><td><b>Zoom Docs</b></td><td>Docs → More → Import → Import local files. Markdown also via the Zoom Docs API (≤ 100 KB).</td></tr>
+    <tr><td><b>Jira RTM</b></td><td>Test cases per EPIC folder; the <code>@TC-…</code> tag is the RTM id; create bugs from the test execution and link them to the task.</td></tr>
+  </table>
+  <p class="small">Full step-by-step: <code>spg-qa-automation/docs/IMPORT_GUIDE.md</code></p>
+
+  <h2 style="margin-top:18px">7. Findings at a glance</h2>
+  <table>
+    <tr><th>Bug</th><th></th><th>In one line</th></tr>
+    <tr><td>SPG-BUG-01</td><td><span class="sev c">Critical</span></td><td>Password hashes and push tokens are returned by the API.</td></tr>
+    <tr><td>SPG-BUG-11</td><td><span class="sev c">Critical</span></td><td>Updating "my profile" with some fields erases the email – account locked out.</td></tr>
+    <tr><td>SPG-BUG-24</td><td><span class="sev c">Critical</span></td><td>Posting an emergency response comment crashes the API for 5–30 s.</td></tr>
+    <tr><td>SPG-BUG-28</td><td><span class="sev c">Critical</span></td><td>Photo storage can be listed and written without logging in.</td></tr>
+    <tr><td>SPG-BUG-25</td><td><span class="sev h">High</span></td><td>Photos save but most CMS edit pages don't show them.</td></tr>
+    <tr><td>SPG-BUG-02</td><td><span class="sev h">High</span></td><td>Entity page shows and edits the wrong person as Principal Admin.</td></tr>
+  </table>
+  <p class="small">28 confirmed (4 Critical, 6 High, 10 Medium, 8 Low) and 14 suspected – see the Word reports.</p>
+</section>
+
+<section>
+  <h2>8. Mobile apps – how to automate them with AI</h2>
+  <p>Plan for the SPG client app ("lite"/"secure") and field operative app. Not run yet – it needs the app builds and devices.</p>
+  <table>
+    <tr><th>Need</th><th>Tool</th></tr>
+    <tr><td>Test language</td><td>Same Gherkin as web and API</td></tr>
+    <tr><td>Mobile driver</td><td>Appium 2 with WebdriverIO + Cucumber (in the QA guide)</td></tr>
+    <tr><td>Quick build check</td><td>Maestro YAML flows (optional)</td></tr>
+    <tr><td>Devices</td><td>LambdaTest real devices + 1–2 physical phones</td></tr>
+    <tr><td>AI control</td><td>Appium MCP / Maestro MCP – the AI sees the screen, taps, suggests locators</td></tr>
+  </table>
+  <h3>AI does the work, people approve</h3>
+  <table>
+    <tr><th>Step</th><th>AI</th><th>Person</th></tr>
+    <tr><td>Design</td><td>Writes test cases + Gherkin</td><td>QA Lead approves</td></tr>
+    <tr><td>Explore</td><td>Walks the app, suggests locators</td><td>QA corrects</td></tr>
+    <tr><td>Automate</td><td>Writes step code</td><td>Code review</td></tr>
+    <tr><td>Triage</td><td>Bug vs flaky vs changed screen; drafts the bug</td><td>QA confirms before Jira</td></tr>
+    <tr><td>Fix tests</td><td>Proposes the fix</td><td>QA accepts – no silent self-healing</td></tr>
+  </table>
+  <h3>Kept partly manual</h3>
+  <p>Emergency audio/video quality, push notifications, real GPS walk test and the camera are checked by hand on a physical device each release. OTP uses the stage bypass code; data is set up through the API.</p>
+  <p class="small">Full plan with rollout over 6 sprints: <code>docs/MOBILE_AUTOMATION_PLAN.md</code>.</p>
+</section>
+
+<section>
+  <h2>9. Troubleshooting</h2>
+  <table>
+    <tr><th>You see</th><th>Why</th><th>Do this</th></tr>
+    <tr><td><code>./run.sh</code>: permission denied</td><td>Unzip tool dropped the "executable" flag</td><td><code>bash run.sh …</code> or <code>chmod +x run.sh</code></td></tr>
+    <tr><td>401 "Invalid Token!"</td><td>Someone logged in with the same account</td><td>Use a dedicated QA account; the suite logs in again automatically</td></tr>
+    <tr><td>Chromium won't start on Linux</td><td>Missing system libraries</td><td>Set <code>PW_CHANNEL=chrome</code> in <code>.env</code> (uses installed Google Chrome) or ask IT to run <code>npx playwright install-deps chromium</code></td></tr>
+    <tr><td><code>bddgen</code>: missing step</td><td>A Gherkin line has no step code</td><td><code>npm run steps:list</code>, reuse wording or add the step</td></tr>
+    <tr><td>"Expected to fail, but passed"</td><td>A known bug looks fixed</td><td>Re-check manually, then remove <code>@fail</code></td></tr>
+    <tr><td>502 Bad Gateway everywhere</td><td>Staging API restarted (often SPG-BUG-24)</td><td>Wait ~30 s; check nobody posted an emergency comment</td></tr>
+    <tr><td>Photo saved as empty</td><td>Update clicked before the upload finished (SPG-SUS-12)</td><td>Wait for the upload spinner to finish</td></tr>
+    <tr><td>Missing <code>SPG_…</code> setting</td><td><code>.env</code> not filled in</td><td>Copy <code>.env.example</code> to <code>.env</code></td></tr>
+  </table>
+
+  <h3>Sprint checklist (QA guide)</h3>
+  <ol>
+    <li>Sprint planning: generate and review test cases for the next two sprints (RTM + Gherkin).</li>
+    <li>During the sprint: automate approved scenarios; tag <code>@wip</code> until the feature is deployed.</li>
+    <li>Every merge: CI runs <code>@smoke</code>; a failing pipeline blocks the merge.</li>
+    <li>Regression sprint: <code>npm run test:regression</code> + Postman collection.</li>
+    <li>Release: sprint automation report + release report (qa-docs-writer), bugs linked in Jira.</li>
+    <li>Retro: review known bugs that turned green and flaky timing results.</li>
+  </ol>
+</section>
+</body>
+</html>

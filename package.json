@@ -1,0 +1,37 @@
+{
+  "name": "spg-qa-automation",
+  "version": "1.0.0",
+  "description": "SPG QA automation \u2013 Gherkin (BDD) + Playwright via playwright-bdd",
+  "scripts": {
+    "gen": "bddgen test",
+    "test": "bddgen test && playwright test",
+    "test:smoke": "TAGS='@smoke' bddgen test && playwright test",
+    "test:regression": "TAGS='@regression' bddgen test && playwright test",
+    "test:api": "bddgen test && playwright test --project=api",
+    "test:ui": "bddgen test && playwright test --project=ui",
+    "test:known-bugs": "TAGS='@fail' bddgen test && playwright test",
+    "test:headed": "bddgen test && playwright test --project=ui --headed",
+    "test:debug": "bddgen test && playwright test --project=ui --headed --debug",
+    "test:ui-mode": "bddgen test && playwright test --ui",
+    "steps:list": "bddgen export",
+    "doctor": "node scripts/doctor.mjs",
+    "steps:unused": "node scripts/unused-steps.mjs",
+    "report": "playwright show-report reports/playwright-html",
+    "report:summary": "node scripts/sprint-report.mjs",
+    "check": "tsc --noEmit -p .",
+    "test:creates-data": "TAGS='@creates-data' bddgen test && playwright test"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1147.0",
+    "@aws-sdk/credential-providers": "^3.1147.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.4",
+    "dotenv": "^18.0.6",
+    "newman": "^6.2.2",
+    "newman-reporter-htmlextra": "^1.23.1",
+    "playwright-bdd": "^9.2.1",
+    "typescript": "^7.0.2"
+  },
+  "private": true,
+  "license": "UNLICENSED"
+}
