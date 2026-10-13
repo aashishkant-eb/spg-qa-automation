@@ -1,6 +1,4 @@
 # SPG QA Automation
-
-[![CI](https://github.com/ebpearls/spg-qa-automation/actions/workflows/qa-automation.yml/badge.svg)](https://github.com/ebpearls/spg-qa-automation/actions/workflows/qa-automation.yml)
 [![Playwright](https://img.shields.io/badge/Playwright-1.63+-green.svg)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0+-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-UNLICENSED-red.svg)](LICENSE)
