@@ -196,16 +196,6 @@ Scenarios tagged `@fail @SPG-BUG-xx` are **confirmed bugs** in the SPG platform:
 - Never log emergency responses on staging (SPG-BUG-24)
 - Never send partial PATCH to `/admin/auth/me/update` (SPG-BUG-11)
 
-## 📚 Documentation
-
-- [How Everything Works](docs/HOW_IT_WORKS.md) / [PDF](docs/SPG_QA_How_Everything_Works.pdf)
-- [Import Guide](docs/IMPORT_GUIDE.md)
-- [AI Tools Setup](docs/AI_TOOLS_SETUP.md)
-- [Glossary](docs/GLOSSARY.md)
-- [API Coverage](docs/API_COVERAGE.md)
-- [AI Workflow](docs/AI_WORKFLOW.md)
-- [Writing Tests](docs/WRITING_TESTS.md)
-- [Mobile Automation Plan](docs/MOBILE_AUTOMATION_PLAN.md)
 
 ## 🔒 Security & Best Practices
 
